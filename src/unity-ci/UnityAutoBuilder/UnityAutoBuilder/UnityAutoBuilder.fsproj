@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -15,6 +15,7 @@
         <Link>.dockerignore</Link>
       </Content>
       <Content Include="Dockerfile" />
+      <Compile Include="Infra\ScmConfiguration.Fs" />
     </ItemGroup>
 
 </Project>
