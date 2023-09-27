@@ -7,11 +7,11 @@ open System
 open System.Reflection
 
 
-[<assembly: System.Reflection.AssemblyCompanyAttribute("UnityCIServer")>]
+[<assembly: System.Reflection.AssemblyCompanyAttribute("UnityAutoBuilder")>]
 [<assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")>]
 [<assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")>]
 [<assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")>]
-[<assembly: System.Reflection.AssemblyProductAttribute("UnityCIServer")>]
-[<assembly: System.Reflection.AssemblyTitleAttribute("UnityCIServer")>]
+[<assembly: System.Reflection.AssemblyProductAttribute("UnityAutoBuilder")>]
+[<assembly: System.Reflection.AssemblyTitleAttribute("UnityAutoBuilder")>]
 [<assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")>]
 do()

@@ -112,11 +112,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityCIServer/UnityCIServer/UnityCIServer.fsproj",
-      "projectName": "UnityCIServer",
-      "projectPath": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityCIServer/UnityCIServer/UnityCIServer.fsproj",
+      "projectUniqueName": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityAutoBuilder/UnityAutoBuilder/UnityAutoBuilder.fsproj",
+      "projectName": "UnityAutoBuilder",
+      "projectPath": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityAutoBuilder/UnityAutoBuilder/UnityAutoBuilder.fsproj",
       "packagesPath": "/Users/kevinavignon/.nuget/packages/",
-      "outputPath": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityCIServer/UnityCIServer/obj/",
+      "outputPath": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityAutoBuilder/UnityAutoBuilder/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/kevinavignon/.nuget/NuGet/NuGet.Config"
