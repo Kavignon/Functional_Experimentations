@@ -16,6 +16,9 @@
       </Content>
       <Content Include="Dockerfile" />
       <Compile Include="Infra\ScmConfiguration.Fs" />
+
+    <ItemGroup>
+      <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
     </ItemGroup>
 
 </Project>

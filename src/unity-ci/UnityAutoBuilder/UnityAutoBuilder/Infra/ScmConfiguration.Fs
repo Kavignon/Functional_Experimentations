@@ -1,47 +1,88 @@
+
 module UnityAutoBuilder.SourceControlManagerConfiguration
+open System
+open System.IO
 
-// ** Source Control System Configuration ** //
-// As of now, for the experiment, we only support Git.
-// We will add support for other source control systems later.
-// I'm adding a few todos to keep track of what we need to do.
-// They'll be removed once we've implemented the feature.
+open FsToolkit.ErrorHandling
 
-// TODO: Add support for other source control systems
-// TODO: Add support for generic source control system configuration
-// TODO: Add support for generic source control system commands
-// TODO: Add support for generic source control system commit message template
-// TODO: Add support for generic source control system commit message template variables
+type SupportedScm =
+    | Git
+    
+type GitRepositoryInformation = {
+    projectName: string
+    gitRepositoryPath: string
+    gitMainBranchName: string
+    hostedServerName: string
+}
 
-// Over time, we should move to an open configuration allowing to use any source control system.
-// This will require to add a new configuration file for each source control system.
-// The configuration file will be loaded dynamically based on the source control system used.
-// The configuration file should also specify the commands that we can support for each source control system.
-// The configuration file should also allow to specify the variables that can be used in the template.
-// The configuration file should also allow to specify the commit message template variables.
-// The configuration file could be a JSON file with the following structure:
-// {
-//     "sourceControlSystem": "Git",
-//     "sourceControlSystemConfiguration": {
-//         "gitConfiguration": {
-//             "gitPath": "C:\\Program Files\\Git\\bin\\git.exe",
-//             "gitRepositoryPath": "C:\\Users\\user\\Documents\\GitHub\\UnityAutoBuilder",
-//             "gitBranch": "master",
-//             "gitCommitMessage": "Build from UnityAutoBuilder"
-//         },
-//         "gitCommands": {
-//             "gitStatus": "git status",
-//             "gitAdd": "git add",
-//             "gitCommit": "git commit",
-//             "gitPush": "git push",
-//             "gitTag": "git tag",
-//             "gitPushTag": "git push --tags"
-//         },
-//         "gitCommitMessageTemplate": "Build from UnityAutoBuilder - {0} - {1} - {2}",
-//         "gitCommitMessageTemplateVariables": [
-//             "BuildNumber",
-//             "BuildTarget",
-//             "BuildPlatform"
-//         ]
-//     }
-// }
+type ScmUserCredentials = {
+    username: string
+    password: string
+}
 
+type LocalGitFolder = {
+    directoryPath: string
+    subDirectoryPath: string option
+}
+
+type CloneCommandArgs = {
+    repositoryInformation: GitRepositoryInformation
+    userCredentials: ScmUserCredentials
+    localGitFolder: LocalGitFolder
+}
+    
+type GitCommand =
+    | Clone of CloneCommandArgs
+    
+type ScmSupportedCommand =
+    | GitCommand of GitCommand
+    
+let validateGitCommand (gitCommand: GitCommand) : Validation<unit, string> =
+    let validateUserCredentials userCredentials =
+        if String.IsNullOrEmpty(userCredentials.username) then
+            Error "Username is null or empty"
+        elif String.IsNullOrEmpty(userCredentials.password) then
+            Error "Password is null or empty"
+        else
+            Ok ()
+            
+    let validateLocalGitFolder gitFolder projectName =
+        if String.IsNullOrEmpty(gitFolder.directoryPath) then
+            Error "Directory path is null or empty"
+        elif not (Directory.Exists(gitFolder.directoryPath)) then
+            Error "Directory path does not exist"
+        elif (Option.isSome gitFolder.subDirectoryPath) && not (Directory.Exists(Path.Combine(gitFolder.directoryPath, gitFolder.subDirectoryPath.Value))) then
+             Error "Directory path does not exist"
+        else
+            Ok ()
+            
+    let validateGitRepositoryInformation repositoryInfo =
+        if String.IsNullOrEmpty(repositoryInfo.projectName) then
+            Error "Project name is null or empty"
+        elif String.IsNullOrEmpty(repositoryInfo.gitRepositoryPath) then
+            Error "Git repository path is null or empty"
+        elif String.IsNullOrEmpty(repositoryInfo.gitMainBranchName) then
+            Error "Git main branch name is null or empty"
+        elif String.IsNullOrEmpty(repositoryInfo.hostedServerName) then
+            Error "Hosted server name is null or empty"
+        else
+            Ok ()
+    
+    match gitCommand with
+    | Clone args ->
+        validation {
+            let! _ = validateUserCredentials args.userCredentials
+            and! _ = validateLocalGitFolder args.localGitFolder args.repositoryInformation.projectName
+            and! _ = validateGitRepositoryInformation args.repositoryInformation
+            return ()
+        } 
+        
+let cloneRepository (scmCommand: ScmSupportedCommand) =
+    match scmCommand with
+    | GitCommand (Clone args) ->
+        match validateGitCommand (Clone args) with
+        | Error listOfErrors ->
+            listOfErrors
+            |> List.iter (fun error -> printfn $"Error: %s{error}")
+        | Ok () ->
+            () // TODO: Implement the local process infrastructure executing SCM commands.
