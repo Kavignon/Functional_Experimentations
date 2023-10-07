@@ -1,88 +1,73 @@
 
 module UnityAutoBuilder.SourceControlManagerConfiguration
+
 open System
 open System.IO
 
-open FsToolkit.ErrorHandling
+open UnityAutoBuilder.Utilities.WrappedString
 
 type SupportedScm =
     | Git
     
-type GitRepositoryInformation = {
-    projectName: string
-    gitRepositoryPath: string
-    gitMainBranchName: string
-    hostedServerName: string
-}
-
-type ScmUserCredentials = {
-    username: string
-    password: string
-}
-
-type LocalGitFolder = {
-    directoryPath: string
-    subDirectoryPath: string option
-}
-
-type CloneCommandArgs = {
-    repositoryInformation: GitRepositoryInformation
-    userCredentials: ScmUserCredentials
-    localGitFolder: LocalGitFolder
-}
+type WebHostServer =
+    | GitHub
+    | BitBucket
+    | AzureDevOps
+    | GitLab
     
+type OnlineRepositoryMetadata = {
+    sourceControlManager: SupportedScm
+    hostedServer: WebHostServer
+    hostedServerProjectUrl: Uri
+    hostedServerProjectName: String100
+}
+with
+    static member create 
+        (sourceControlManager: string)
+        (hostedServer: string)
+        (hostedServerProjectUrl: string)
+        (hostedServerProjectName: string) =
+        let tryHostedServerProjectName = tryBuildStr100 hostedServerProjectName
+        let tryHostedServerProjectUrl = Uri.TryCreate(hostedServerProjectUrl, UriKind.Absolute)
+        
+        match tryHostedServerProjectName, tryHostedServerProjectUrl with
+        | Some hostedServerProjectName, (true, hostedServerProjectUrl) ->
+            Some {
+                sourceControlManager = sourceControlManager
+                hostedServer = hostedServer
+                hostedServerProjectUrl = hostedServerProjectUrl
+                hostedServerProjectName = hostedServerProjectName
+            }
+        | _ ->
+            None
+
+type LocalRepositoryMetadata = {
+    rootPath: DirectoryInfo
+    mainBranchName: String100
+}
+with
+    static member create
+        (rootPath: string)
+        (mainBranchName: string) =
+        let tryRootPath = tryBuildStr100 rootPath
+        let tryMainBranchName = tryBuildStr100 mainBranchName
+        
+        match tryRootPath, tryMainBranchName with
+        | Some rootPath, Some mainBranchName ->
+            Some {
+                rootPath = DirectoryInfo(unwrap rootPath)
+                mainBranchName = mainBranchName
+            }
+        | _ ->
+            None
+
+type CloneCommandArgument = {
+    onlineRepository: OnlineRepositoryMetadata
+    localRepository: LocalRepositoryMetadata
+}
+        
 type GitCommand =
-    | Clone of CloneCommandArgs
+    | Clone of CloneCommandArgument
     
 type ScmSupportedCommand =
     | GitCommand of GitCommand
-    
-let validateGitCommand (gitCommand: GitCommand) : Validation<unit, string> =
-    let validateUserCredentials userCredentials =
-        if String.IsNullOrEmpty(userCredentials.username) then
-            Error "Username is null or empty"
-        elif String.IsNullOrEmpty(userCredentials.password) then
-            Error "Password is null or empty"
-        else
-            Ok ()
-            
-    let validateLocalGitFolder gitFolder projectName =
-        if String.IsNullOrEmpty(gitFolder.directoryPath) then
-            Error "Directory path is null or empty"
-        elif not (Directory.Exists(gitFolder.directoryPath)) then
-            Error "Directory path does not exist"
-        elif (Option.isSome gitFolder.subDirectoryPath) && not (Directory.Exists(Path.Combine(gitFolder.directoryPath, gitFolder.subDirectoryPath.Value))) then
-             Error "Directory path does not exist"
-        else
-            Ok ()
-            
-    let validateGitRepositoryInformation repositoryInfo =
-        if String.IsNullOrEmpty(repositoryInfo.projectName) then
-            Error "Project name is null or empty"
-        elif String.IsNullOrEmpty(repositoryInfo.gitRepositoryPath) then
-            Error "Git repository path is null or empty"
-        elif String.IsNullOrEmpty(repositoryInfo.gitMainBranchName) then
-            Error "Git main branch name is null or empty"
-        elif String.IsNullOrEmpty(repositoryInfo.hostedServerName) then
-            Error "Hosted server name is null or empty"
-        else
-            Ok ()
-    
-    match gitCommand with
-    | Clone args ->
-        validation {
-            let! _ = validateUserCredentials args.userCredentials
-            and! _ = validateLocalGitFolder args.localGitFolder args.repositoryInformation.projectName
-            and! _ = validateGitRepositoryInformation args.repositoryInformation
-            return ()
-        } 
-        
-let cloneRepository (scmCommand: ScmSupportedCommand) =
-    match scmCommand with
-    | GitCommand (Clone args) ->
-        match validateGitCommand (Clone args) with
-        | Error listOfErrors ->
-            listOfErrors
-            |> List.iter (fun error -> printfn $"Error: %s{error}")
-        | Ok () ->
-            () // TODO: Implement the local process infrastructure executing SCM commands.
