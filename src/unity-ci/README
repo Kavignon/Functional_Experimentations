@@ -1,0 +1,83 @@
+# Unity Auto Builder
+
+## Overview
+
+The Unity Auto Builder is a command-line tool designed to automate and streamline the process of managing Unity game projects. It simplifies common development tasks such as cloning repositories, setting build targets, building projects, and archiving files. This tool is intended to save developers time and effort by providing a convenient way to perform these tasks efficiently.
+
+## Features
+
+- **Clone Repositories**: Easily clone Unity game project repositories from source control management (SCM) systems such as Git.
+
+- **Build Projects**: Seamlessly build Unity projects for specific platforms, including Android and iOS, using the Unity Editor.
+
+- **Archive Artifacts**: Archive project assets and build logs for easy storage and distribution.
+
+## Prerequisites
+
+Before using the Unity Auto Builder, ensure that the following prerequisites are met:
+
+- [.NET 7](https://dotnet.microsoft.com/download/dotnet/7.0) is installed on your machine.
+
+- [Git](https://git-scm.com/) is installed and configured as the preferred SCM tool.
+
+- The [Unity Editor](https://unity.com/) is installed on your machine.
+
+## Getting Started
+
+Follow these steps to get started with the Unity Auto Builder:
+
+1. Clone the repository to your local machine.
+
+2. Use the .NET CLI or a .NET Integrated Development Environment (IDE) to build the project's binaries.
+
+3. To learn about specific commands and their arguments, run the executable with the `--help` flag.
+
+## Usage
+
+### Cloning a Repository
+
+To clone a Unity project repository, use the following command:
+
+```bash
+unity-auto-builder clone --url <project-url> --directory <destination-directory> --subfolder <subfolder-name>
+
+<project-url>: The URL of the repository to clone.
+<destination-directory>: The local directory where the repository will be cloned.
+<subfolder-name> (optional): The subfolder within the destination directory to contain the cloned repository contents.
+```
+
+### Building the Game
+To build a Unity project for a specific platform, use the following command:
+
+```bash
+unity-auto-builder build-game --build-target <target-name> --unity-project-directory <project-directory> --build-player-script-file <script-file-name> --build-player-method-name <method-name>
+
+
+<target-name>: The build target used by the Unity Editor to deploy the game (e.g., Android, iOS).
+<project-directory>: The path to the directory of the Unity game project.
+<script-file-name>: The name of the script and class responsible for building the player.
+<method-name>: The name of the method in charge of building the player.
+```
+
+### Publishing Artifacts
+To publish artifacts and logs of the built game, use the following command:
+
+```bash
+unity-auto-builder publish --assets-directory <assets-directory> --logs-directory <logs-directory> --output-archive-file <archive-file-path>
+
+<assets-directory>: The directory path to the assets of the game project.
+<logs-directory>: The directory path to the logs of the game project.
+<archive-file-path>: The file path where the game archives will be published on the host machine.
+```
+
+## Contributing
+
+Contributions to the Unity Auto Builder project are welcome! 
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+Special thanks to the open-source community and the contributors who have made this project possible.

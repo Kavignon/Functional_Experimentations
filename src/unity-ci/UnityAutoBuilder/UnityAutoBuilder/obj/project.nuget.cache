@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "kum7Zp1lX9CyTAHxm/sVjW9NWYwYPQscehT7/QC4jL8KrZWBy+1yiTfeTYO8oeTqMOzFtq3hFke71BNIaPQ64g==",
+  "success": true,
+  "projectFilePath": "/Users/kevinavignon/Documents/development/Functional_Experimentations/src/unity-ci/UnityAutoBuilder/UnityAutoBuilder/UnityAutoBuilder.fsproj",
+  "expectedPackageFiles": [
+    "/Users/kevinavignon/.nuget/packages/fsharp.core/7.0.0/fsharp.core.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
