@@ -1,0 +1,2 @@
+module UnityAutoBuilder.Utilities.WrappedString
+
